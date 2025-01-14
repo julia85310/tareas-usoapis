@@ -68,3 +68,26 @@ export async function PUT(request) {
     );
   }
 }
+
+export async function DELETE(request) {
+  try {
+    const body = await request.json();
+
+    if (!body.id) {
+      return new Response(
+        JSON.stringify({ error: "No se especifica el id de la tarea" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    tasks = tasks.filter((task) => task.id != body.id);
+    return new Response(
+      JSON.stringify({ message: "Tarea eliminada" }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Error, no se ha podido realizar la petición" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}

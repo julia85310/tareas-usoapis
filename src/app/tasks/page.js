@@ -69,6 +69,33 @@ export default function TasksPage(){
     }
    }
 
+   async function deleteTarea(taskDelete){
+    const result = window.confirm(`¿Deseas eliminar la tarea ${taskDelete.title}?`);
+    if (!result) {
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:3000/api/tasks", {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({id: taskDelete.id}),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        getData();
+      } else {
+        setMensaje(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      setMensaje('Error estableciendo la conexión');
+    }
+   }
+
+
   return <div>
     <h1>Tareas</h1>
     <ul>
@@ -76,6 +103,7 @@ export default function TasksPage(){
         <li key={task.id}>
         <input type='checkbox' checked={task.completed} onChange={() => updateTarea(task.id)}></input>
         {task.completed? <s>{task.title}</s>: task.title}
+        <button onClick={() => deleteTarea(task)}>Eliminar</button>
         </li>
       )}
     </ul>
