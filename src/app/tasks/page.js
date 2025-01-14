@@ -47,12 +47,34 @@ export default function TasksPage(){
     }
    }
 
+   async function updateTarea(idUpdate){
+    try {
+      const res = await fetch("http://localhost:3000/api/tasks", {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({id: idUpdate}),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        getData();
+      } else {
+        setMensaje(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      setMensaje('Error estableciendo la conexión');
+    }
+   }
 
   return <div>
     <h1>Tareas</h1>
     <ul>
       {tareas.map((task) =>
         <li key={task.id}>
+        <input type='checkbox' checked={task.completed} onChange={() => updateTarea(task.id)}></input>
         {task.completed? <s>{task.title}</s>: task.title}
         </li>
       )}

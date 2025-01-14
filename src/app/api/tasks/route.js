@@ -37,3 +37,34 @@ export async function POST(request) {
     );
   }
 }
+
+export async function PUT(request) {
+  try {
+    const body = await request.json();
+
+    if (!body.id) {
+      return new Response(
+        JSON.stringify({ error: "No se especifica el id de la tarea" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    let completed;
+    tasks = tasks.map((task) => {
+      if(task.id == body.id){
+        completed = !task.completed;
+        return {...task, completed: completed};
+      }else{
+        return task;
+      }
+    });
+    return new Response(
+      JSON.stringify({ message: "Tarea cambiada a ", completed }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Error, no se ha podido realizar la petición" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
