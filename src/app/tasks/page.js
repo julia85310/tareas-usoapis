@@ -6,16 +6,22 @@ export default function TasksPage(){
   const [tareas, setTareas] = useState([]);
   const [formData, setFormData] = useState(emptyForm);
   const [mensaje, setMensaje] = useState('');
-  
+  const [filter, setFilter] = useState('all');
+
   async function getData() {
-    const res = await fetch("http://localhost:3000/api/tasks");
+    let url = "/api/tasks"
+
+    if(filter !== "all"){
+      url = url + "?filter=" + filter
+    }
+    const res = await fetch(url);
     const data = await res.json();
     setTareas(data);
   }
 
   useEffect( () => {
     getData()
-   }, [])
+   }, [filter])
 
    async function addTarea(e){
     e.preventDefault();
@@ -98,6 +104,9 @@ export default function TasksPage(){
 
   return <div>
     <h1>Tareas</h1>
+    <input type='radio' name='filtroTareas' defaultChecked value='all' onChange={() => setFilter('all')}/>Todas
+    <input type='radio' name='filtroTareas' value='completed' onChange={() => setFilter('completed')}/>Completadas
+    <input type='radio' name='filtroTareas' value='incompleted' onChange={() => setFilter('incompleted')}/>Incompletas
     <ul>
       {tareas.map((task) =>
         <li key={task.id}>

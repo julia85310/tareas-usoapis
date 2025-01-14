@@ -4,8 +4,19 @@ let tasks = [
   { id: 3, title: "Comprar zapatillas", completed: false }
 ];
 
-export async function GET() {
-  return new Response(JSON.stringify(tasks), {
+export async function GET(request) {
+  const url = new URL(request.url)
+  const filter = url.searchParams.get("filter")
+
+  let filterTasks = tasks;
+
+  if (filter == 'completed'){
+    filterTasks = tasks.filter((task) => task.completed)
+  } else if (filter == 'incompleted'){
+    filterTasks = tasks.filter((task) => !task.completed)
+  }
+
+  return new Response(JSON.stringify(filterTasks), {
     headers: { "Content-Type": "application/json" },
   });
 }
